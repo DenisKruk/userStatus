@@ -6,9 +6,7 @@
 	<groupId>com.user</groupId>
 	<artifactId>userStatus</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<modules>
-		<module>web</module>
-	</modules>
+
 	<packaging>pom</packaging>
 
 	<name>userStatus</name>
@@ -44,6 +42,11 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.191</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.32</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

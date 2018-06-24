@@ -12,12 +12,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
-public class userDao {
-    private static final AtomicLong counter = new AtomicLong();
 
-    private static List<User> usersDao;
+public class UserDao {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final String url = "jdbc:mysql://localhost:3306/users";
     private static final String user = "root";
@@ -27,6 +24,8 @@ public class userDao {
     private static ResultSet rs;
 
     public static List<User> readAll() {
+        //---------подключение к серверу MySQL ----------
+//        List<User>users=new ArrayList<>();
 //        try {
 //            con = DriverManager.getConnection(url, user, password);
 //            stmt = con.createStatement();
@@ -39,22 +38,12 @@ public class userDao {
 //                    user.setSecondName(rs.getString("second_name"));
 //                    user.seteMail(rs.getString("e_mail"));
 //                    user.setStatus(Integer.valueOf(rs.getString("status")));
-//
 //                    users.add(user);
 //                } catch (SQLException e) {
-        try {
-            FileInputStream fis = new FileInputStream("users.json");// открытие потока, для чтения файла users.json
-
-            usersDao = mapper.readValue(fis, new TypeReference<List<User>>() {
-            });
-            return usersDao;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return Collections.emptyList();
-
-    }
-
+//
+//                }
+//            }
+//
 //        } catch (SQLException sqlEx) {
 //            sqlEx.printStackTrace();
 //        } finally {
@@ -67,16 +56,38 @@ public class userDao {
 //            } catch (SQLException se) {
 //            }
 //        }
-//
-//        return users;
-//    }
 
-public  static void saveInFile(List<User>any){
-    try(FileOutputStream fos = new FileOutputStream("users.json")) {
-        String listOfusers = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(any);
-        fos.write(listOfusers.getBytes());
-        fos.flush();
+        return readAllJson();
+    }
 
-    } catch (IOException e) { e.getMessage();
-    }}
+    public static List<User> readAllJson() {
+        //---------------Чтение файла JSon--------------
+        try (
+                FileInputStream fis = new FileInputStream("users.json")) {// открытие потока, для чтения файла users.json
+
+            List<User> usersDao = mapper.readValue(fis, new TypeReference<List<User>>() {
+            });
+            Collections.sort(usersDao, User::compare); // сортировка по ID
+            return usersDao;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return Collections.emptyList();
+
+    }
+
+    //по аналогии можно создать соединение с MySQL для сохранения, удаления и обновления...
+    // (различие  в использовании Result Set и executeQuery для получения ответа от БД и последующей его обработки;
+    // и использование executeUpdate без получения ответа от БД)
+
+    public static void saveInFile(List<User> users) {
+        try (FileOutputStream fos = new FileOutputStream("users.json")) {
+            String listOfusers = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(users);
+            fos.write(listOfusers.getBytes());
+            fos.flush();
+
+        } catch (IOException e) {
+            e.getMessage();
+        }
+    }
 }

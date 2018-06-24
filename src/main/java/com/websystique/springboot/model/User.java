@@ -5,64 +5,56 @@ public class User {
     private String name;
     private String secondName;
     private String eMail;
-    private int status=1;
+    private int status = 1;
+
+    public User() {
+    }
+
+    public User(long id, String name, String secondName, String eMail, int status) {
+        this.id = id;
+        this.name = name;
+        this.secondName = secondName;
+        this.eMail = eMail;
+        this.status = status;
+    }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        name = name;
     }
 
     public String getSecondName() {
         return secondName;
     }
 
-    public void setSecondName(String secondName) {
-        secondName = secondName;
-    }
-
     public String geteMail() {
         return eMail;
-    }
-
-    public void seteMail(String eMail) {
-        this.eMail = eMail;
     }
 
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public User() {
-    }
-
-    public User(String name, String secondName, String eMail) {
-        this.name = name;
-        this.secondName = secondName;
-        this.eMail = eMail;
-    }
-
-    public User(long id, String name, String secondName, String eMail, int status) {
-
+    public void setId(long id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public void setSecondName(String secondName) {
         this.secondName = secondName;
+    }
+
+    public void seteMail(String eMail) {
         this.eMail = eMail;
+    }
+
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -85,4 +77,18 @@ public class User {
         result = 31 * result + eMail.hashCode();
         return result;
     }
+
+    public static int compare(Object o1, Object o2) {
+        Long p1 = ((User) o1).getId();
+        Long p2 = ((User) o2).getId();
+
+        if (p1 > p2) {
+            return 1;
+        } else if (p1 < p2) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 }
+

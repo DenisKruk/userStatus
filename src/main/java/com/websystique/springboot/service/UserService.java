@@ -18,4 +18,5 @@ public interface UserService {
 
     boolean isUserExist(User user);
 
+    void changeStatus(User user);
 }
