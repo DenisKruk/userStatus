@@ -3,6 +3,8 @@ package com.websystique.springboot.dao;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.websystique.springboot.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -15,16 +17,20 @@ import java.util.List;
 
 
 public class UserDao {
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final String url = "jdbc:mysql://localhost:3306/users";
-    private static final String user = "root";
-    private static final String password = "root";
-    private static Connection con;
-    private static Statement stmt;
-    private static ResultSet rs;
 
-    public static List<User> readAll() {
-        //---------подключение к серверу MySQL ----------
+    public static final Logger logger = LoggerFactory.getLogger(UserDao.class);
+
+    private static final ObjectMapper mapper = new ObjectMapper();
+//    private static final String url = "jdbc:mysql://localhost:3306/users";
+//    private static final String user = "root";
+//    private static final String password = "root";
+//    private static Connection con;
+//    private static Statement stmt;
+//    private static ResultSet rs;
+
+//     метод для базы данных
+//    public static List<User> readAll() {
+    //---------подключение к серверу MySQL ----------
 //        List<User>users=new ArrayList<>();
 //        try {
 //            con = DriverManager.getConnection(url, user, password);
@@ -56,38 +62,35 @@ public class UserDao {
 //            } catch (SQLException se) {
 //            }
 //        }
+//
+//        return readAll();
+//    }
+//по аналогии можно создать соединение с MySQL для сохранения, удаления и обновления...
+// (различие  в использовании Result Set и executeQuery для получения ответа от БД и последующей его обработки;
+// и использование executeUpdate без получения ответа от БД)
 
-        return readAllJson();
-    }
-
-    public static List<User> readAllJson() {
+    public static List<User> readAll() {
         //---------------Чтение файла JSon--------------
-        try (
-                FileInputStream fis = new FileInputStream("users.json")) {// открытие потока, для чтения файла users.json
+        try (FileInputStream fis = new FileInputStream("users.json")) {// открытие потока, для чтения файла users.json
 
-            List<User> usersDao = mapper.readValue(fis, new TypeReference<List<User>>() {
-            });
-            Collections.sort(usersDao, User::compare); // сортировка по ID
+            List<User> usersDao = mapper.readValue(fis, new TypeReference<List<User>>() {});
+            usersDao.sort(User::compare); // сортировка по ID
             return usersDao;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logger.error("ошибка в процессе чтения файла", ex.getMessage());
         }
         return Collections.emptyList();
 
     }
 
-    //по аналогии можно создать соединение с MySQL для сохранения, удаления и обновления...
-    // (различие  в использовании Result Set и executeQuery для получения ответа от БД и последующей его обработки;
-    // и использование executeUpdate без получения ответа от БД)
 
     public static void saveInFile(List<User> users) {
         try (FileOutputStream fos = new FileOutputStream("users.json")) {
-            String listOfusers = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(users);
-            fos.write(listOfusers.getBytes());
+            String listOfUsers = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(users);
+            fos.write(listOfUsers.getBytes());
             fos.flush();
-
         } catch (IOException e) {
-            e.getMessage();
+            logger.error("ошибка в процессе сохранения в файл", e.getMessage());
         }
     }
 }

@@ -12,20 +12,16 @@ import static com.websystique.springboot.dao.UserDao.saveInFile;
 @Service("userService")
 public class UserServiceImpl implements UserService {
 
-    private static final Long counter = unicalId();
-
     private static Long unicalId() {
-        Long count = 1l;
+        Long count = 1L;
         List<User> users = readAll();
         if (users.isEmpty()) {
             return count;
-        } else {
-            for (User user : users) {
-                if (count <= user.getId()) {
-                    count = user.getId() + 1;
-                }
+        }
+        for (User user : users) {
+            if (count <= user.getId()) {
+                count = user.getId() + 1;
             }
-
         }
         return count;
     }
@@ -33,9 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public synchronized List<User> findAllUsers() {
-
         List<User> users = readAll();
-
         return users;
     }
 
@@ -67,13 +61,12 @@ public class UserServiceImpl implements UserService {
 
     public boolean isUserExist(User user) {
         List<User> users = readAll();
-        boolean result = false;
         for (User user1 : users) {
             if (user.equals(user1)) {
-                result = true;
+                return true; // здесь изменил тк у тебя получалось что цикл шел до конца, не смотря на то что существующий юзер найден
             }
         }
-        return result;
+        return false;
     }
 
     @Override
