@@ -61,7 +61,8 @@ public class UserController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/api/user/{id}").buildAndExpand(user.getId()).toUri());
-        return new ResponseEntity(new CustomErrorType("Создан пользователь с ID= {id}"), HttpStatus.CREATED);
+        logger.info("Создан новый пользователь ID =" + user.getId());
+        return new ResponseEntity(" Создан пользователь с ID=" + user.getId(), HttpStatus.CREATED);
     }
 
 
@@ -83,7 +84,7 @@ public class UserController {
 
     // ------------------- Изменяем статус пользователя-----------------------------------------
     @RequestMapping(value = "/user/status/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> changeUserStatus(@PathVariable("id") long id) {
+    public ResponseEntity<?> changeUserStatus(@PathVariable("id") long id, UriComponentsBuilder ucBuilder) {
         logger.info("Находим и меняем статус пользователя", id);
         User user = userService.findById(id);
         if (user == null) {
@@ -92,6 +93,14 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
         userService.changeStatus(user);
-        return new ResponseEntity<User>(HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(ucBuilder.path("/api/user/status/{id}").buildAndExpand(user.getStatus()).toUri());
+        if (user.getStatus() == 1) {
+            logger.info("Cтатус  пользователя ID =" + user.getId() + " поменялся с 2 на 1", id);
+            return new ResponseEntity(" Cтатус  пользователя ID =" + user.getId() + " поменялся с 2 на 1", HttpStatus.CREATED);
+        } else {
+            logger.info("Cтатус  пользователя ID =" + user.getId() + " поменялся с 1 на 2", id);
+            return new ResponseEntity(" Cтатус  пользователя ID =" + user.getId() + " поменялся с 1на 2", HttpStatus.CREATED);
+        }
     }
 }

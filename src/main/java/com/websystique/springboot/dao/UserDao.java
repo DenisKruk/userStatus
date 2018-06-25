@@ -9,9 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
 
@@ -73,7 +70,8 @@ public class UserDao {
         //---------------Чтение файла JSon--------------
         try (FileInputStream fis = new FileInputStream("users.json")) {// открытие потока, для чтения файла users.json
 
-            List<User> usersDao = mapper.readValue(fis, new TypeReference<List<User>>() {});
+            List<User> usersDao = mapper.readValue(fis, new TypeReference<List<User>>() {
+            });
             usersDao.sort(User::compare); // сортировка по ID
             return usersDao;
         } catch (IOException ex) {
