@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = readAll();
         for (User user1 : users) {
             if (user.equals(user1)) {
-                return true; // здесь изменил тк у тебя получалось что цикл шел до конца, не смотря на то что существующий юзер найден
+                return true;
             }
         }
         return false;
